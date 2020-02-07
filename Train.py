@@ -8,19 +8,19 @@ import numpy as np
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 
-from Faces import Faces
+from LFW import LFW
 from Trainer import Trainer
 
-batch_size = 4
-num_epochs = 5
+batch_size = 8
+num_epochs = 30
 
-data_dir = "./Faces_cropped"
+data_dir = "./lfw"
 weight_dir = "./weights"
 size = (224, 224) #input and output size
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-trainset = Faces(data_dir, size, pair=True, crop_face=False)
+trainset = LFW(data_dir, size)
 dataloader = torch.utils.data.DataLoader(
                 trainset, batch_size=batch_size,
                 shuffle=False, num_workers=0)
@@ -49,13 +49,12 @@ def main(args):
         t = tqdm(dataloader)
         for i, data in enumerate(t):
             # Input
-            image1 = data[0].to(device)
-            label1 = data[1]
-            image2 = data[2].to(device)
-            label2 = data[3]
+            anchor = data[0].to(device)
+            positive = data[1].to(device)
+            negative = data[2].to(device)
 
             # Train
-            output = trainer.update(image1, label1, image2, label2)
+            output = trainer.update(anchor, positive, negative)
 
             # Log
             metrics = trainer.get_metrics()

@@ -4,30 +4,28 @@ import torch.nn.functional as f
 import torch.optim as optim
 
 from os.path import join
-from Siamese_MobileNetV2 import Siamese_MobileNetV2, ContrastiveLoss
+from Siamese_MobileNetV2 import Siamese_MobileNetV2_Triplet, TripletLoss
 from Faces import Faces
 
-lr = 0.001
+lr = 0.05
 momentum = 0.9
 
 class Trainer(nn.Module):
-    def __init__(self, device, pretrained=False, margin=1.0):
+    def __init__(self, device, pretrained=False, alpha=0.2):
         super(Trainer, self).__init__()
 
-        self.model = Siamese_MobileNetV2(pretrained=pretrained).to(device)
+        self.model = Siamese_MobileNetV2_Triplet(pretrained=pretrained).to(device)
         self.optim = optim.SGD([
                         {'params': self.model.parameters()},
                      ], lr=lr, momentum=momentum)
 
-        self.loss = ContrastiveLoss(margin=margin)
+        self.loss = TripletLoss(alpha=alpha)
         self.metrics = {}
 
-    def update(self, input1, label1, input2, label2):
-        loss = 0.0
+    def update(self, anchor, positive, negative):
 
-        output1, output2 = self.model(input1, input2)
-        label = label1 != label2 #0 if label1 == label2, else 1
-        loss = self.loss(output1, output2, label.int())
+        anchor, positive, negative = self.model(anchor, positive, negative)
+        loss = self.loss(anchor, positive, negative)
 
         self.model.zero_grad()
         loss.backward()
@@ -38,7 +36,7 @@ class Trainer(nn.Module):
         }
         self.metrics = metrics
 
-        return output1, output2, loss
+        return loss, anchor, positive, negative
 
     def get_metrics(self):
         return self.metrics
@@ -47,7 +45,7 @@ class Trainer(nn.Module):
         self.model.load_state_dict(checkpoint['weight'])
 
     def save(self, save_dir, iterations):
-        weight_fn = join(save_dir, "siamese_mobilenet_v2_pretrained_%d.pkl" % iterations)
+        weight_fn = join(save_dir, "siamese_mobilenet_v2_pretrained_triplet%d.pkl" % iterations)
 
         state = {
             'weight': self.model.state_dict(),
