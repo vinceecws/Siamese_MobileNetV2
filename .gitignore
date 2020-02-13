@@ -3,3 +3,6 @@ Faces_cropped/
 lfw/
 weights/
 runs/
+embeddings/
+Train_Loss.csv
+Train_Loss.png

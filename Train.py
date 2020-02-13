@@ -8,8 +8,8 @@ import numpy as np
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 
-from LFW import LFW
-from Trainer import Trainer
+from utils.LFW import LFW
+from Trainer import Trainer_TripletLoss
 
 batch_size = 8
 num_epochs = 30
@@ -25,7 +25,7 @@ dataloader = torch.utils.data.DataLoader(
                 trainset, batch_size=batch_size,
                 shuffle=False, num_workers=0)
 
-trainer = Trainer(device, pretrained=True)
+trainer = Trainer_TripletLoss(device, pretrained=True)
 writer = SummaryWriter()
 
 def main(args):
@@ -82,4 +82,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args)
-

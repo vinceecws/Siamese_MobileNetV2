@@ -22,7 +22,7 @@ def main(args):
 
     input_width = 224
     input_height = 224
-    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    face_cascade = cv2.CascadeClassifier('../utils/haarcascade_frontalface_default.xml')
     preprocess = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),

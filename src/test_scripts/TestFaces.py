@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from Faces import Faces
 import cv2
 
-faces = Faces('./Faces', (224,224), pair=True, crop_face=True)
+faces = Faces('../Faces', (224,224), pair=True, crop_face=True)
 
 fig = plt.figure(figsize=(6,2))
 

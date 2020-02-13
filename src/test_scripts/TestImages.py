@@ -10,7 +10,7 @@ from Siamese_MobileNetV2 import Siamese_MobileNetV2
 
 input_width = 224
 input_height = 224
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('../utils/haarcascade_frontalface_default.xml')
 preprocess = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),

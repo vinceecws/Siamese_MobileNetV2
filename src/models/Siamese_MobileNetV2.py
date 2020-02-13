@@ -31,6 +31,17 @@ class Siamese_MobileNetV2(nn.Module):
     def eval(self):
         self._eval = True
         self._model.eval()
+        self._classifier.eval()
+        print(f'{self.__class__.__name__} in evaluation mode.')
+
+    def train(self):
+        self._eval = False
+        self._model.train()
+        self._classifier.train()
+        print(f'{self.__class__.__name__} in training mode.')
+
+    def inEval(self):
+        return self._eval
 
 class Siamese_MobileNetV2_Triplet(nn.Module):
 
@@ -42,20 +53,24 @@ class Siamese_MobileNetV2_Triplet(nn.Module):
         self._classifier = nn.Sequential(
                                         nn.Dropout(p=p),
                                         nn.Linear(in_features=final_in_chn, out_features=final_out_chn, bias=True))
+        self._bn = nn.BatchNorm1d(128)
 
     def forward(self, x, y=None, z=None):
         x = self._model(x)
         x = x.mean([2, 3])
         x = self._classifier(x)
+        x = self._bn(x)
 
         if not self._eval:
             y = self._model(y)
             y = y.mean([2, 3])
             y = self._classifier(y)
+            y = self._bn(y)
 
             z = self._model(z)
             z = z.mean([2, 3])
-            z = self._classifier(z)     
+            z = self._classifier(z)   
+            z = self._bn(z)
 
             return x, y, z
 
@@ -65,6 +80,19 @@ class Siamese_MobileNetV2_Triplet(nn.Module):
     def eval(self):
         self._eval = True
         self._model.eval()
+        self._classifier.eval()
+        self._bn.eval()
+        print(f'{self.__class__.__name__} in evaluation mode.')
+
+    def train(self):
+        self._eval = False
+        self._model.train()
+        self._classifier.train()
+        self._bn.train()
+        print(f'{self.__class__.__name__} in training mode.')
+
+    def inEval(self):
+        return self._eval
 
 class ContrastiveLoss(nn.Module):
 
@@ -88,13 +116,17 @@ class TripletLoss(nn.Module):
         self.alpha = alpha
 
     def forward(self, anchor, positive, negative):
-        positive_euclidean = f.pairwise_distance(anchor, positive)
-        negative_euclidean = f.pairwise_distance(anchor, negative)
+        positive_euclidean = self.dist(anchor, positive)
+        negative_euclidean = self.dist(anchor, negative)
         loss = positive_euclidean - negative_euclidean + self.alpha
-        loss = torch.sum(loss)
         loss = torch.clamp(loss, 0.0)
+        loss = torch.mean(loss, axis=0)
 
         return loss
+
+    @classmethod
+    def dist(cls, x, y):
+        return torch.sum(torch.pow(x - y, 2),1)
 
 
 
