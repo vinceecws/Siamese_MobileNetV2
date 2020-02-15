@@ -6,7 +6,7 @@ import torch.optim as optim
 from os.path import join
 from ..models.Siamese_MobileNetV2 import Siamese_MobileNetV2_Triplet, TripletLoss
 
-lr = 0.005
+lr = 0.001
 momentum = 0.9
 
 class Trainer_TripletLoss(nn.Module):
@@ -106,7 +106,7 @@ class Trainer_TripletLoss_NegativeHard(nn.Module):
         self.model.load_state_dict(checkpoint['weight'])
 
     def save(self, save_dir, iterations):
-        weight_fn = join(save_dir, "siamese_mobilenet_v2_pretrained_triplet_negative_hard%d.pkl" % iterations)
+        weight_fn = join(save_dir, "siamese_mobilenet_v2_pretrained_triplet_negative_hard_with_augmentation_%d.pkl" % iterations)
 
         state = {
             'weight': self.model.state_dict(),

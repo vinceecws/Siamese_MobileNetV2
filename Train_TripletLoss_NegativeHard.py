@@ -16,7 +16,7 @@ mini_batch_size = 4
 num_epochs = 30
 alpha = 0.2
 data_dir = "./lfw"
-weight_dir = "./weights"
+weight_dir = "./weights/augmented"
 embeddings_dir = "./embeddings"
 size = (224, 224) #input and output size
 
