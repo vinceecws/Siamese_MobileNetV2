@@ -32,13 +32,13 @@ class Siamese_MobileNetV2(nn.Module):
         self._eval = True
         self._model.eval()
         self._classifier.eval()
-        print(f'{self.__class__.__name__} in evaluation mode.')
+        print('{} in evaluation mode.'.format(self.__class__.__name__))
 
     def train(self):
         self._eval = False
         self._model.train()
         self._classifier.train()
-        print(f'{self.__class__.__name__} in training mode.')
+        print('{} in training mode.'.format(self.__class__.__name__))
 
     def inEval(self):
         return self._eval
@@ -82,14 +82,14 @@ class Siamese_MobileNetV2_Triplet(nn.Module):
         self._model.eval()
         self._classifier.eval()
         self._bn.eval()
-        print(f'{self.__class__.__name__} in evaluation mode.')
+        print('{} in evaluation mode.'.format(self.__class__.__name__))
 
     def train(self):
         self._eval = False
         self._model.train()
         self._classifier.train()
         self._bn.train()
-        print(f'{self.__class__.__name__} in training mode.')
+        print('{} in training mode.'.format(self.__class__.__name__))
 
     def inEval(self):
         return self._eval

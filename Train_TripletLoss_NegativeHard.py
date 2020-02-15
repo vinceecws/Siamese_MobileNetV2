@@ -44,7 +44,7 @@ def main(args):
     for e in range(1, epochs + 1):
             for b in range(batches):
                 trainset.setBatchInd(b) #Set batch index
-                print(f'Epoch {e}/{epochs}, Batch {b + 1}/{batches}:')
+                print('Epoch {}/{}, Batch {}/{}:'.format(e, epochs, b + 1, batches))
                 #Forward through mini batch, select triplets and build dataset
                 trainset.normal() #Normal pick without using triplet loss constraint
                 dataloader = torch.utils.data.DataLoader(
@@ -61,7 +61,7 @@ def main(args):
 
                     # Get embeddings
                     output = trainer.forward_prop(anchor, positive, negative)
-                    torch.save(output, f'./embeddings/emb_{i:03d}.pt')
+                    torch.save(output, './embeddings/emb_{:03d}.pt'.format(i))
 
                 # Build hard samples
                 print('Building semi-hard negative triplets...')
@@ -74,7 +74,7 @@ def main(args):
                 dataloader = torch.utils.data.DataLoader(
                                 trainset, batch_size=mini_batch_size,
                                 shuffle=False, num_workers=0, drop_last=True)
-                print(f'Training with selected triplets... {num_samples} triplets')
+                print('Training with selected triplets... {} triplets'.format(num_samples))
                 sum_loss = 0
                 t = tqdm(dataloader)
                 for i, data in enumerate(t):

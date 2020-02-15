@@ -75,7 +75,7 @@ class LFW(Dataset):
         return random.randrange(1, max_idx + 1)
 
     def getFileName(self, name, idx):
-        return f'{name}/{name}_{idx:04d}.jpg'
+        return '{}/{}_{:04d}.jpg'.format(name, name, idx)
 
     def randomPick(self, idx):
         anchor_name, anchor_idx, positive_idx = [x for x in self.anchor_positive_pairs_dir[idx].strip().split() if x]
@@ -204,7 +204,7 @@ class LFW_Triple_Negative_Hard_Mining(Dataset):
         return random.randrange(1, max_idx + 1)
 
     def getFileName(self, name, idx):
-        return f'{name}/{name}_{idx:04d}.jpg'
+        return '{}/{}_{:04d}.jpg'.format(name, name, idx)
 
     def normalPick(self, batch, idx):
 
@@ -228,8 +228,8 @@ class LFW_Triple_Negative_Hard_Mining(Dataset):
 
     def expandAndSplit(self, people, threshold, batch_size, shuffle=False):
         num_samples = len(people) * threshold * (threshold - 1)
-        assert num_samples % batch_size == 0, f'With {len(people)} identities at {threshold} images/identity, samples of length \
-            {len(people)} * {threshold} * ({threshold} - 1) = {num_samples} is not divisible by batch_size of {batch_size}'
+        assert num_samples % batch_size == 0, 'With {} identities at {} images/identity, samples of length \
+            {} * {} * ({} - 1) = {} is not divisible by batch_size of {}'.format(len(people), threshold, len(people), threshold, threshold, num_samples, batch_size)
 
         if shuffle:
             random.seed(time.time())
